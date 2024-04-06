@@ -10,9 +10,9 @@ from PIL import Image
 torch.backends.cudnn.benchmark = True
 
 # Define the training parameters
-batch_size = 32
-epochs = 40
-learning_rate = 0.0001
+batch_size = 20
+epochs = 56
+learning_rate = 0.000008
 
 # Define the image transformations
 transform = transforms.Compose([
@@ -22,10 +22,10 @@ transform = transforms.Compose([
 ])
 
 # Load the dataset
-dataset = datasets.ImageFolder("persian_digits5v0", transform=transform)
+dataset = datasets.ImageFolder("persian_digits5v0-Copy", transform=transform)
 
 # Split the dataset into training and validation sets
-train_size = int(0.75 * len(dataset))
+train_size = int(0.92 * len(dataset))
 val_size = len(dataset) - train_size
 train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
 
@@ -35,11 +35,11 @@ val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True)
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model_path="persian_number_model0&5.1.pth"
+model_path="persian_number_model0&5.22.pth"
 model=torch.load(model_path,map_location=device)
 
 # Load a pre-trained model
-# model = models.resnet50(pretrained=True)
+# model = models.resnet101(pretrained=True)
 
 # Replace the last layer to match the number of classes
 num_classes = len(dataset.classes)
@@ -54,7 +54,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 # Initialize variables for early stopping
-patience = 9
+patience = 15
 best_loss = None
 no_improve_epoch = 0
 
@@ -74,7 +74,7 @@ for epoch in range(epochs):
         running_loss += loss.item()
 
     epoch_loss = running_loss / len(train_loader)
-    print(f'Epoch {epoch+1}/{epochs}, Loss: {epoch_loss:.5f}')
+    print(f'Epoch {epoch+1}/{epochs}, Loss: {epoch_loss:.7f}')
 
     # Check for early stopping
     if best_loss is None or epoch_loss < best_loss:
@@ -84,11 +84,11 @@ for epoch in range(epochs):
         no_improve_epoch += 1
 
     if no_improve_epoch >= patience:
-        print('No improvement in loss for 6 epochs, stopping training')
+        print(f'No improvement in loss for {patience} epochs, stopping training')
         break
 
 # Save the entire model
-torch.save(model, 'persian_number_model0&5.2.pth')
+torch.save(model, 'persian_number_model0&5.23.pth')
 
 print('Model trained and saved')
 

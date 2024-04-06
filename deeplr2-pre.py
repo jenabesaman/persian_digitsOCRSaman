@@ -55,7 +55,7 @@ transform = transforms.Compose([
 ])
 
 # Load the pretrained model
-model_path = 'persian_number_model3.6.pth'
+model_path = 'persian_number_model0&5.2.pth'
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Load the entire model
@@ -64,7 +64,7 @@ model = model.to(device)
 model.eval()
 
 # Define the class names
-class_names = ['0', '1','2','3','4','5','6','7','8','9']
+class_names = ['0', '5']
 
 # Load and predict the labels for the new images
 test_images_dir = 'test_image'
